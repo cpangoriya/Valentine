@@ -5,166 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Will You Be My Valentine?</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Arial', sans-serif;
-            /* Background photo of Chirag and Rashi */
             background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('background.jpg');
             background-size: cover;
             background-position: center;
             overflow: hidden;
         }
-
         .container {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
-            padding: 40px;
+            padding: 30px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             text-align: center;
-            width: 350px;
+            width: 90%;
+            max-width: 400px;
             z-index: 10;
         }
-
-        h1 {
-            color: #ff4d6d;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            position: relative;
-            min-height: 60px;
-        }
-
-        button {
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-        }
-
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-            z-index: 11;
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff758f;
-        }
-
-        #noBtn {
-            background-color: #6c757d;
-            color: white;
-            position: relative; /* Starts next to Yes */
-            z-index: 999;
-        }
-
-        /* Celebration Screen Styles */
-        #celebration {
-            display: none;
-        }
-
-        .celebration-img {
-            width: 100%;
-            border-radius: 15px;
-            margin-top: 15px;
-        }
-
-        /* Falling Hearts Animation */
-        .heart {
-            position: fixed;
-            top: -10vh;
-            font-size: 1.5rem;
-            color: #ff4d6d;
-            z-index: 1;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
-        }
+        h1 { color: #ff4d6d; margin-bottom: 20px; font-size: 1.6rem; }
+        h2 { color: #ff4d6d; margin-bottom: 15px; font-size: 1.3rem; }
+        p { color: #444; margin-bottom: 10px; font-weight: bold; }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; position: relative; min-height: 80px; }
+        button { padding: 12px 25px; font-size: 1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: 0.2s; }
+        #yesBtn { background-color: #ff4d6d; color: white; }
+        #noBtn { background-color: #6c757d; color: white; position: relative; z-index: 999; }
+        input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ffccd5; outline: none; }
+        input:focus { border: 2px solid #ff4d6d; }
+        .hidden { display: none; }
+        .celebration-img { width: 100%; border-radius: 15px; margin-top: 15px; margin-bottom: 15px; }
+        .final-msg { font-size: 1.1rem; color: #d63384; line-height: 1.5; font-style: italic; }
+        .heart { position: fixed; top: -10vh; font-size: 1.5rem; color: #ff4d6d; z-index: 1; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <audio id="valentineMusic" loop>
-        <source src="Jiandro_-_WHERE_IS_MY_HUSBAND_RAYE_(mp3.pm).mp3" type="audio/mpeg">
+        <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="mainCard">
-        <div id="questionArea">
-            <h1>Will you be my Valentine, my Shiro Baby? ❤️</h1>
+        <div id="stage1">
+            <h1>Will you be my Valentine, Rashi? ❤️</h1>
             <div class="buttons">
-                <button id="yesBtn" onclick="showCelebration()">Yes</button>
-                <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+                <button id="yesBtn" onclick="goToQuiz()">Yes</button>
+                <button id="noBtn" onmouseover="handleNo()" onclick="handleNo()">No</button>
             </div>
         </div>
 
-        <div id="celebration">
-            <h1>Finally! Best Decision! ❤️</h1>
-            <p>I love you!</p>
-            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExb203OTk2bmh5eDBxNXZuYThnZ3hzMmt6Y2hhOHgxc3kzYjYydDllNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ic0fMgtVhIjjbqmY3H/giphy.gif" class="celebration-img">
+        <div id="stage2" class="hidden">
+            <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9meDkwM2duNWFmcmE4Zmd6cmJvN3lrOHRvdzF0NXU5cGY4ajFzeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sEsz0hI5Nu2y7p0OVB/giphy.gif" class="celebration-img">
+            <h2>Just to be sure... 😉</h2>
+            <div id="quiz">
+                <p>1. Where was our first date?</p>
+                <input type="text" id="q1" placeholder="Location...">
+                <p>2. What color shirt did I wear?</p>
+                <input type="text" id="q2" placeholder="Color...">
+                <p>3. What time did we meet?</p>
+                <input type="text" id="q3" placeholder="Time...">
+                <button id="yesBtn" onclick="showFinal()">Submit</button>
+            </div>
+        </div>
+
+        <div id="stage3" class="hidden">
+            <h1>Yay! Best decision ever! ❤️</h1>
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHY5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c7QVDpZ7G5I6N6OaBc/giphy.gif" class="celebration-img">
+            <p class="final-msg">"So get ready in the same clothes as our first date and meet me below your home at the same time as our first date."</p>
         </div>
     </div>
 
     <script>
         const music = document.getElementById('valentineMusic');
+        let noCount = 0;
         let musicStarted = false;
 
-        function moveButton() {
-            // Start music on first attempt to click 'No'
+        function handleNo() {
             if (!musicStarted) {
-                music.play().catch(e => console.log("Audio waiting for user click"));
+                music.play().catch(e => console.log("Audio waiting"));
                 musicStarted = true;
             }
-
+            noCount++;
             const btn = document.getElementById('noBtn');
-            
-            // Switch to fixed so it can move anywhere relative to the screen
-            btn.style.position = 'fixed';
-
-            // Calculate safe boundaries
-            const padding = 20;
-            const maxX = window.innerWidth - btn.offsetWidth - padding;
-            const maxY = window.innerHeight - btn.offsetHeight - padding;
-
-            // Generate random positions
-            const randomX = Math.max(padding, Math.random() * maxX);
-            const randomY = Math.max(padding, Math.random() * maxY);
-
-            btn.style.left = randomX + 'px';
-            btn.style.top = randomY + 'px';
+            if (noCount <= 5) {
+                btn.style.position = 'fixed';
+                const padding = 50;
+                const maxX = window.innerWidth - btn.offsetWidth - padding;
+                const maxY = window.innerHeight - btn.offsetHeight - padding;
+                const randomX = Math.max(padding, Math.random() * maxX);
+                const randomY = Math.max(padding, Math.random() * maxY);
+                btn.style.left = randomX + 'px';
+                btn.style.top = randomY + 'px';
+            } else {
+                btn.style.position = 'relative';
+                btn.style.left = '0';
+                btn.style.top = '0';
+                btn.innerHTML = "Okay fine, click me 🙄";
+            }
         }
 
-        function showCelebration() {
-            // Ensure music plays if Yes is clicked first
+        function goToQuiz() {
             music.play();
-            document.getElementById('questionArea').style.display = 'none';
-            document.getElementById('celebration').style.display = 'block';
+            document.getElementById('stage1').classList.add('hidden');
+            document.getElementById('stage2').classList.remove('hidden');
+        }
+
+        function showFinal() {
+            // Optional: check if inputs are empty
+            const q1 = document.getElementById('q1').value;
+            const q2 = document.getElementById('q2').value;
+            const q3 = document.getElementById('q3').value;
             
-            // Start the heart shower
+            if(q1 === "" || q2 === "" || q3 === "") {
+                alert("Please answer the questions, I know you remember! 😘");
+                return;
+            }
+
+            document.getElementById('stage2').classList.add('hidden');
+            document.getElementById('stage3').classList.remove('hidden');
             setInterval(createHeart, 300);
         }
 
@@ -174,13 +137,8 @@
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-            heart.style.opacity = Math.random();
             document.body.appendChild(heart);
-
-            // Clean up hearts to save memory
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
+            setTimeout(() => heart.remove(), 5000);
         }
     </script>
 </body>
