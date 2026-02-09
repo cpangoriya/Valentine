@@ -3,61 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
+    <title>Will You Be My Valentine?</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('background.jpg');
+            font-family: 'Arial', sans-serif;
+            /* Background photo of Chirag and Rashi */
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('background.jpg');
             background-size: cover;
             background-position: center;
             overflow: hidden;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             text-align: center;
-            max-width: 85%;
-            width: 400px;
+            width: 350px;
             z-index: 10;
         }
 
-        h1 { color: #d63384; font-size: 1.8rem; margin-bottom: 30px; }
+        h1 {
+            color: #ff4d6d;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
 
         .buttons {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
-            height: 50px;
             position: relative;
+            min-height: 60px;
         }
 
         button {
-            padding: 12px 30px;
+            padding: 12px 25px;
             font-size: 1.1rem;
+            font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; font-weight: bold; }
-        #noBtn {
-    background-color: #6c757d;
-    color: white;
-    position: absolute; /* This allows it to jump the first time */
-    z-index: 999;       /* This ensures it stays on top of everything */
-}
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            z-index: 11;
+        }
 
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #ff758f;
+        }
+
+        #noBtn {
+            background-color: #6c757d;
+            color: white;
+            position: relative; /* Starts next to Yes */
+            z-index: 999;
+        }
+
+        /* Celebration Screen Styles */
+        #celebration {
+            display: none;
+        }
+
+        .celebration-img {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        /* Falling Hearts Animation */
         .heart {
             position: fixed;
             top: -10vh;
@@ -67,20 +100,22 @@
             animation: fall linear forwards;
         }
 
-        @keyframes fall { to { transform: translateY(110vh) translateX(20px); } }
-        #celebration { display: none; }
-        img.gif { width: 100%; border-radius: 10px; margin-top: 15px; }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
 
     <audio id="valentineMusic" loop>
-        <source src="Jiandro_-_WHERE_IS_MY_HUSBAND_RAYE_(mp3.pm).mp3" type="audio/mpeg">
+        <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="mainCard">
         <div id="questionArea">
-            <h1>Will you be my Valentine? ❤️</h1>
+            <h1>Will you be my Valentine, my Shiro Baby? ❤️</h1>
             <div class="buttons">
                 <button id="yesBtn" onclick="showCelebration()">Yes</button>
                 <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
@@ -88,56 +123,64 @@
         </div>
 
         <div id="celebration">
-            <h1>Yay! I'm so happy! ❤️</h1>
-            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmljaG5ydmJ0cm5yeDA0aWM0ZWx5OGtzanEzcXpjNDQzb3VyMmt5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ic0fMgtVhIjjbqmY3H/giphy.gif" class="gif">
+            <h1>Finally! Best Decision! ❤️</h1>
+            <p>I love you!</p>
+            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExb203OTk2bmh5eDBxNXZuYThnZ3hzMmt6Y2hhOHgxc3kzYjYydDllNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ic0fMgtVhIjjbqmY3H/giphy.gif" class="celebration-img">
         </div>
     </div>
 
     <script>
         const music = document.getElementById('valentineMusic');
         let musicStarted = false;
-        
+
         function moveButton() {
-            // 1. Play music as soon as they try to touch 'No'
+            // Start music on first attempt to click 'No'
             if (!musicStarted) {
-                music.play().catch(e => console.log("Music waiting for interaction"));
+                music.play().catch(e => console.log("Audio waiting for user click"));
                 musicStarted = true;
             }
-            
+
             const btn = document.getElementById('noBtn');
             
-            // 2. Fixed 'Disappearing' Logic:
-            // We calculate the max width/height minus button size so it stays on screen
-            const maxX = window.innerWidth - btn.offsetWidth - 20;
-            const maxY = window.innerHeight - btn.offsetHeight - 20;
-            
-            // Ensure it doesn't go into negative space (off-screen left/top)
-            const x = Math.max(10, Math.random() * maxX);
-            const y = Math.max(10, Math.random() * maxY);
-            
-            btn.style.position = 'fixed'; // Overrides any container constraints
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+            // Switch to fixed so it can move anywhere relative to the screen
+            btn.style.position = 'fixed';
+
+            // Calculate safe boundaries
+            const padding = 20;
+            const maxX = window.innerWidth - btn.offsetWidth - padding;
+            const maxY = window.innerHeight - btn.offsetHeight - padding;
+
+            // Generate random positions
+            const randomX = Math.max(padding, Math.random() * maxX);
+            const randomY = Math.max(padding, Math.random() * maxY);
+
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
         }
-        
+
         function showCelebration() {
-            // Play music if it hasn't started yet
+            // Ensure music plays if Yes is clicked first
             music.play();
             document.getElementById('questionArea').style.display = 'none';
             document.getElementById('celebration').style.display = 'block';
             
-            // Start heart rain
+            // Start the heart shower
             setInterval(createHeart, 300);
         }
-        
+
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            heart.style.opacity = Math.random();
             document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+
+            // Clean up hearts to save memory
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
         }
     </script>
 </body>
