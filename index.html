@@ -63,7 +63,7 @@
 
     <div class="container" id="mainCard">
         <div id="stage1">
-            <h1>Will you be my Valentine, Rashi? ❤️</h1>
+            <h1>Will you be my Valentine, Shiro baby? ❤️</h1>
             <div class="buttons">
                 <button id="yesBtn" onclick="goToQuiz()">Yes</button>
                 <button id="noBtn" onmouseover="handleNo()" ontouchstart="handleNo()">No</button>
@@ -147,7 +147,7 @@
             const q2 = document.getElementById('q2').value;
             const q3 = document.getElementById('q3').value;
             
-            if(q1 === "Paradox" || q2 === "White" || q3 === "6:30") {
+            if(q1 !== "Paradox" || q2 !== "White" || q3 !== "6:30") {
                 alert("Please answer the questions, I know you remember! 😘");
                 return;
             }
