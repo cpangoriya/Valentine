@@ -51,7 +51,12 @@
         }
 
         #yesBtn { background-color: #ff4d6d; color: white; font-weight: bold; }
-        #noBtn { background-color: #6c757d; color: white; position: absolute; left: 55%; }
+        #noBtn {
+    background-color: #6c757d;
+    color: white;
+    position: absolute; /* This allows it to jump the first time */
+    z-index: 999;       /* This ensures it stays on top of everything */
+}
 
         .heart {
             position: fixed;
@@ -90,27 +95,41 @@
 
     <script>
         const music = document.getElementById('valentineMusic');
-
+        let musicStarted = false;
+        
         function moveButton() {
-            // Play music on first interaction (browser requirement)
-            music.play().catch(e => console.log("Audio waiting for user click"));
+            // 1. Play music as soon as they try to touch 'No'
+            if (!musicStarted) {
+                music.play().catch(e => console.log("Music waiting for interaction"));
+                musicStarted = true;
+            }
             
             const btn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
             
+            // 2. Fixed 'Disappearing' Logic:
+            // We calculate the max width/height minus button size so it stays on screen
+            const maxX = window.innerWidth - btn.offsetWidth - 20;
+            const maxY = window.innerHeight - btn.offsetHeight - 20;
+            
+            // Ensure it doesn't go into negative space (off-screen left/top)
+            const x = Math.max(10, Math.random() * maxX);
+            const y = Math.max(10, Math.random() * maxY);
+            
+            btn.style.position = 'fixed'; // Overrides any container constraints
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
-            btn.style.position = 'fixed';
         }
-
+        
         function showCelebration() {
+            // Play music if it hasn't started yet
             music.play();
             document.getElementById('questionArea').style.display = 'none';
             document.getElementById('celebration').style.display = 'block';
+            
+            // Start heart rain
             setInterval(createHeart, 300);
         }
-
+        
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
