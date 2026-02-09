@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 85%;
+            width: 400px;
+            z-index: 10;
+        }
+
+        h1 { color: #d63384; font-size: 1.8rem; margin-bottom: 30px; }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            height: 50px;
+            position: relative;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; font-weight: bold; }
+        #noBtn { background-color: #6c757d; color: white; position: absolute; left: 55%; }
+
+        .heart {
+            position: fixed;
+            top: -10vh;
+            font-size: 1.5rem;
+            color: #ff4d6d;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall { to { transform: translateY(110vh) translateX(20px); } }
+        #celebration { display: none; }
+        img.gif { width: 100%; border-radius: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <audio id="valentineMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container" id="mainCard">
+        <div id="questionArea">
+            <h1>Will you be my Valentine? ❤️</h1>
+            <div class="buttons">
+                <button id="yesBtn" onclick="showCelebration()">Yes</button>
+                <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+            </div>
+        </div>
+
+        <div id="celebration">
+            <h1>Yay! I'm so happy! ❤️</h1>
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHY5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c7QVDpZ7G5I6N6OaBc/giphy.gif" class="gif">
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById('valentineMusic');
+
+        function moveButton() {
+            // Play music on first interaction (browser requirement)
+            music.play().catch(e => console.log("Audio waiting for user click"));
+            
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+            btn.style.position = 'fixed';
+        }
+
+        function showCelebration() {
+            music.play();
+            document.getElementById('questionArea').style.display = 'none';
+            document.getElementById('celebration').style.display = 'block';
+            setInterval(createHeart, 300);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+    </script>
+</body>
+</html>
