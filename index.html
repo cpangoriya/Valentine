@@ -17,6 +17,17 @@
             background-position: center;
             overflow: hidden;
         }
+        /* New: Unlock music overlay for mobile */
+        #musicUnlocker {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
         .container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
@@ -28,15 +39,13 @@
             max-width: 400px;
             z-index: 10;
         }
-        h1 { color: #ff4d6d; margin-bottom: 20px; font-size: 1.6rem; }
-        h2 { color: #ff4d6d; margin-bottom: 15px; font-size: 1.3rem; }
+        h1, h2 { color: #ff4d6d; margin-bottom: 20px; font-size: 1.6rem; }
         p { color: #444; margin-bottom: 10px; font-weight: bold; }
         .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; position: relative; min-height: 80px; }
         button { padding: 12px 25px; font-size: 1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: 0.2s; }
         #yesBtn { background-color: #ff4d6d; color: white; }
-        #noBtn { background-color: #6c757d; color: white; position: relative; z-index: 999; }
+        #noBtn { background-color: #6c757d; color: white; position: relative; z-index: 999; touch-action: none; }
         input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ffccd5; outline: none; }
-        input:focus { border: 2px solid #ff4d6d; }
         .hidden { display: none; }
         .celebration-img { width: 100%; border-radius: 15px; margin-top: 15px; margin-bottom: 15px; }
         .final-msg { font-size: 1.1rem; color: #d63384; line-height: 1.5; font-style: italic; }
@@ -44,9 +53,11 @@
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
-<body>
+<body onclick="unlockMusic()">
 
-    <audio id="valentineMusic" loop>
+    <div id="musicUnlocker"></div>
+
+    <audio id="valentineMusic" loop preload="auto">
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
@@ -55,7 +66,7 @@
             <h1>Will you be my Valentine, Rashi? ❤️</h1>
             <div class="buttons">
                 <button id="yesBtn" onclick="goToQuiz()">Yes</button>
-                <button id="noBtn" onmouseover="handleNo()" onclick="handleNo()">No</button>
+                <button id="noBtn" onmouseover="handleNo()" ontouchstart="handleNo()">No</button>
             </div>
         </div>
 
@@ -75,7 +86,7 @@
 
         <div id="stage3" class="hidden">
             <h1>Yay! Best decision ever! ❤️</h1>
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHY5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6Mmo5eWJ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c7QVDpZ7G5I6N6OaBc/giphy.gif" class="celebration-img">
+            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExajV6ZjZrMHRmOGcyYmRhdzFnejVjajFwYXZlNW4ybmczNGhtZDhlaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1Zr9tBf3ZbPaUkjSnQ/giphy.gif" class="celebration-img">
             <p class="final-msg">"So get ready in the same clothes as our first date and meet me below your home at the same time as our first date."</p>
         </div>
     </div>
@@ -83,13 +94,29 @@
     <script>
         const music = document.getElementById('valentineMusic');
         let noCount = 0;
-        let musicStarted = false;
+        let musicUnlocked = false;
+
+        // This function runs on the VERY FIRST tap anywhere on the screen
+        function unlockMusic() {
+            if (!musicUnlocked) {
+                music.play().then(() => {
+                    // We immediately pause it so it's "ready" to play later
+                    music.pause();
+                    music.currentTime = 0;
+                    musicUnlocked = true;
+                    // Remove the invisible overlay
+                    document.getElementById('musicUnlocker').style.display = 'none';
+                    console.log("Music Unlocked");
+                }).catch(e => console.log("Unlock failed:", e));
+            }
+        }
 
         function handleNo() {
-            if (!musicStarted) {
-                music.play().catch(e => console.log("Audio waiting"));
-                musicStarted = true;
+            // Now that music is unlocked, it will play the moment she taps "No"
+            if (musicUnlocked) {
+                music.play();
             }
+
             noCount++;
             const btn = document.getElementById('noBtn');
             if (noCount <= 5) {
@@ -110,18 +137,17 @@
         }
 
         function goToQuiz() {
-            music.play();
+            if (musicUnlocked) music.play();
             document.getElementById('stage1').classList.add('hidden');
             document.getElementById('stage2').classList.remove('hidden');
         }
 
         function showFinal() {
-            // Optional: check if inputs are empty
             const q1 = document.getElementById('q1').value;
             const q2 = document.getElementById('q2').value;
             const q3 = document.getElementById('q3').value;
             
-            if(q1 === "" || q2 === "" || q3 === "") {
+            if(q1 === "Paradox" || q2 === "White" || q3 === "6:30") {
                 alert("Please answer the questions, I know you remember! 😘");
                 return;
             }
