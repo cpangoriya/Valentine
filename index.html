@@ -112,26 +112,35 @@
         }
 
         function handleNo() {
-            // Now that music is unlocked, it will play the moment she taps "No"
             if (musicUnlocked) {
                 music.play();
             }
-
+        
             noCount++;
             const btn = document.getElementById('noBtn');
+        
             if (noCount <= 5) {
+                // Switch to fixed to break out of the container
                 btn.style.position = 'fixed';
-                const padding = 50;
-                const maxX = window.innerWidth - btn.offsetWidth - padding;
-                const maxY = window.innerHeight - btn.offsetHeight - padding;
-                const randomX = Math.max(padding, Math.random() * maxX);
-                const randomY = Math.max(padding, Math.random() * maxY);
+                btn.style.zIndex = '10000'; // Higher than the white card
+        
+                // Calculate a safe area (avoiding the very edges of the screen)
+                const margin = 80; 
+                const maxX = window.innerWidth - btn.offsetWidth - margin;
+                const maxY = window.innerHeight - btn.offsetHeight - margin;
+        
+                // Ensure the random number is at least 'margin' so it's not at 0,0
+                const randomX = Math.floor(Math.random() * (maxX - margin)) + margin;
+                const randomY = Math.floor(Math.random() * (maxY - margin)) + margin;
+        
                 btn.style.left = randomX + 'px';
                 btn.style.top = randomY + 'px';
             } else {
+                // Reset to original position after 5 tries
                 btn.style.position = 'relative';
                 btn.style.left = '0';
                 btn.style.top = '0';
+                btn.style.zIndex = '999';
                 btn.innerHTML = "Okay fine, click me 🙄";
             }
         }
